@@ -4,14 +4,12 @@ package clock
 import "fmt"
 
 type clock struct {
-	hour   int
-	minute int
+	hour, minute int
 }
 
 // New constructor for clock
 func New(h, m int) clock {
-	hr, min := overflow(h, m)
-	return clock{hr, min}
+	return *((&clock{h, m}).overflow())
 }
 
 // String stringer for clock, e.g. "04:12"
@@ -21,20 +19,20 @@ func (c clock) String() string {
 
 // Add adds a given number of minutes to a clock
 func (c clock) Add(in int) clock {
-	hr, min := overflow(c.hour, c.minute+in)
-	return clock{hr, min}
+	c.minute += in
+	return *((&c).overflow())
 }
 
 // Subtract subtracts a given number of minutes from a clock
 func (c clock) Subtract(in int) clock {
-	hr, min := overflow(c.hour, c.minute-in)
-	return clock{hr, min}
+	c.minute -= in
+	return *((&c).overflow())
 }
 
 // overflow handles rollover of hour & minute values
-func overflow(h, m int) (int, int) {
-	min := m % 60
-	hr := (h + m/60) % 24
+func (c *clock) overflow() *clock {
+	min := c.minute % 60
+	hr := (c.hour + c.minute/60) % 24
 	// handle negative minutes
 	if min < 0 {
 		min += 60
@@ -44,5 +42,7 @@ func overflow(h, m int) (int, int) {
 	if hr < 0 {
 		hr += 24
 	}
-	return hr, min
+	c.hour = hr
+	c.minute = min
+	return c
 }
