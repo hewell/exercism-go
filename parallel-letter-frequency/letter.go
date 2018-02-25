@@ -7,8 +7,9 @@ func ConcurrentFrequency(texts []string) FreqMap {
 	c := make(chan FreqMap, len(texts))
 
 	// create a goroutine for each text in the input
-	for i := range texts {
-		go count(c, texts[i])
+	for _, text := range texts {
+		// closure
+		go func(in string) { c <- Frequency(in) }(text)
 	}
 
 	freq := FreqMap{}
@@ -20,9 +21,4 @@ func ConcurrentFrequency(texts []string) FreqMap {
 		}
 	}
 	return freq
-}
-
-// count counts frequency of letters in a text and send it to a channel
-func count(c chan FreqMap, in string) {
-	c <- Frequency(in)
 }
