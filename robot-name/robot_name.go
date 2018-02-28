@@ -12,17 +12,17 @@ var (
 	names    = make(map[string]bool)
 )
 
+// Robot robot
 type Robot struct {
 	name string
 }
 
-// init
+// init initialize rand
 func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-/* Name returns robot's name
-   if the name is empty, assign a new name */
+// Name returns robot's name. if the name is empty, assign a new name
 func (robot *Robot) Name() string {
 	if robot.name != "" {
 		return robot.name
@@ -44,7 +44,7 @@ func (robot *Robot) Reset() {
 	delete(names, robot.name)
 }
 
-// randomString returns specified number of random capital letters
+// randomCapitalLetters returns specified number of random capital letters
 func randomCapitalLetters(in int) string {
 	r := make([]rune, in)
 	for i := range r {
